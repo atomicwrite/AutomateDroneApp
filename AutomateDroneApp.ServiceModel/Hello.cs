@@ -6,6 +6,7 @@ namespace AutomateDroneApp.ServiceModel;
 public class DownloadRequest
 {
     public int Id { get; set; }
+    public string FileType { get; set; }
 }
  
 public class AwsUrlResponse
@@ -17,6 +18,7 @@ public class AwsUrlResponse
 public class AwsUrlRequest : IReturn<AwsUrlResponse>
 {
     public int Id { get; set; }
+    public string FileType { get; set; }
 }
 [Route("/hello/{Name}")]
 public class Hello : IGet, IReturn<HelloResponse>

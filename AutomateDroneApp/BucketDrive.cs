@@ -79,13 +79,15 @@ public class BucketDrive : IPlugin, IPreInitPlugin
     public BucketDrive()
     {
         var s3Client = new AmazonS3Client(RegionEndpoint.USEast1);
-        this.VirtualPathProvider = new S3VirtualFiles(s3Client, "droneappuploadbucket");
+        VirtualPathProvider = new S3VirtualFiles(s3Client, "droneappuploadbucket");
     }
 
     public void BeforePluginsLoaded(IAppHost appHost)
     {
-        appHost.InsertVirtualFileSources.Clear();
+        
+        
         appHost.InsertVirtualFileSources.Add(VirtualPathProvider);
+        
     }
 
     public void Register(IAppHost appHost)

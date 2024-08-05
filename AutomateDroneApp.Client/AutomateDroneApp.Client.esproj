@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="public\img\" />
+    <Folder Include="src\kmz-uploader\" />
     <Folder Include="src\pages\admin\" />
   </ItemGroup>
 </Project>

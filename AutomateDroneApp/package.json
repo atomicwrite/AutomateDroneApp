@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "postinstall": "dotnet run --AppTasks=migrate",
+ "xull":" dotnet aws deploy --region us-east-1   ",
     "dev": "dotnet watch",
     "migrate": "dotnet run --AppTasks=migrate",
     "revert:last": "dotnet run --AppTasks=migrate.revert:last",

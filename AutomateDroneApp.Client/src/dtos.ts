@@ -1,5 +1,5 @@
 /* Options:
-Date: 2024-07-30 15:26:20
+Date: 2024-08-02 19:15:18
 Version: 8.31
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5001
@@ -57,12 +57,17 @@ export interface ICreateDb<Table>
 {
 }
 
-export interface IUpdateDb<Table>
+export interface IDeleteDb<Table>
 {
 }
 
-export interface IDeleteDb<Table>
+export class LatLng
 {
+    public lat: number;
+    public lng: number;
+    public altitude: number;
+
+    public constructor(init?: Partial<LatLng>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -186,11 +191,26 @@ export class S3FileItem implements IFileItem
     // @References("typeof(AutomateDroneApp.ServiceModel.DroneProject)")
     public droneProjectId: number;
 
+    public fileType: string;
+
     public constructor(init?: Partial<S3FileItem>) { (Object as any).assign(this, init); }
 }
 
 export interface IFileItemRequest
 {
+}
+
+export class S3DronePathFile implements IFile
+{
+    public id: number;
+    public fileName: string;
+    public filePath: string;
+    public contentType: string;
+    public contentLength: number;
+    // @References("typeof(AutomateDroneApp.ServiceModel.S3FileItem)")
+    public sharedFileId: number;
+
+    public constructor(init?: Partial<S3DronePathFile>) { (Object as any).assign(this, init); }
 }
 
 export interface IVirtualDirectory
@@ -405,6 +425,26 @@ export interface IHttpFile
     inputStream: string;
 }
 
+export class DronePath
+{
+    public id: number;
+    public name: string;
+    // @References("typeof(AutomateDroneApp.Data.ApplicationUser)")
+    public applicationUserId: string;
+
+    // @References("typeof(AutomateDroneApp.ServiceModel.DroneProject)")
+    public droneProjectId: number;
+
+    public droneProject: DroneProject;
+    public s3DronePathFile: S3DronePathFile;
+    // @References("typeof(AutomateDroneApp.ServiceModel.S3DronePathFile)")
+    public s3DronePathFileId: number;
+
+    public latLngs: LatLng[];
+
+    public constructor(init?: Partial<DronePath>) { (Object as any).assign(this, init); }
+}
+
 export class AwsUrlResponse
 {
     public url: string;
@@ -568,10 +608,24 @@ export class AuthenticateResponse implements IHasSessionId, IHasBearerToken
     public constructor(init?: Partial<AuthenticateResponse>) { (Object as any).assign(this, init); }
 }
 
+// @Route("/donemap/create")
+export class CreateDronePath implements IReturn<DronePath>
+{
+    public latLngs: LatLng[];
+    public droneProjectId: number;
+    public name: string;
+
+    public constructor(init?: Partial<CreateDronePath>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateDronePath'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new DronePath(); }
+}
+
 // @Route("/aws-url/{Id}")
 export class AwsUrlRequest implements IReturn<AwsUrlResponse>
 {
     public id: number;
+    public fileType: string;
 
     public constructor(init?: Partial<AwsUrlRequest>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'AwsUrlRequest'; }
@@ -583,6 +637,7 @@ export class AwsUrlRequest implements IReturn<AwsUrlResponse>
 export class DownloadRequest implements IReturn<HttpResult>
 {
     public id: number;
+    public fileType: string;
 
     public constructor(init?: Partial<DownloadRequest>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'DownloadRequest'; }
@@ -768,6 +823,18 @@ export class Authenticate implements IReturn<AuthenticateResponse>, IPost
     public createResponse() { return new AuthenticateResponse(); }
 }
 
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryDronePath extends QueryDb<DronePath> implements IReturn<QueryResponse<DronePath>>
+{
+    public id?: number;
+    public name?: string;
+
+    public constructor(init?: Partial<QueryDronePath>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryDronePath'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<DronePath>(); }
+}
+
 // @ValidateRequest(Validator="IsAdmin")
 export class QueryAppUser extends QueryDb<ApplicationUser> implements IReturn<QueryResponse<ApplicationUser>>
 {
@@ -822,22 +889,11 @@ export class CreateS3FileItem implements IReturn<S3FileItem>, ICreateDb<S3FileIt
     // @References("typeof(AutomateDroneApp.ServiceModel.DroneProject)")
     public droneProjectId: number;
 
+    public fileType: string;
+
     public constructor(init?: Partial<CreateS3FileItem>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateS3FileItem'; }
     public getMethod() { return 'POST'; }
-    public createResponse() { return new S3FileItem(); }
-}
-
-export class UpdateS3FileItem implements IReturn<S3FileItem>, IUpdateDb<S3FileItem>, IFileItemRequest
-{
-    public id: number;
-    public fileAccessType?: FileAccessType;
-    public geometryFile: S3File;
-    public droneProjectId: number;
-
-    public constructor(init?: Partial<UpdateS3FileItem>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'UpdateS3FileItem'; }
-    public getMethod() { return 'PUT'; }
     public createResponse() { return new S3FileItem(); }
 }
 

@@ -1,3 +1,4 @@
+using System.Text;
 using AutomateDroneApp.ServiceInterface;
 using ServiceStack.Configuration;
 using ServiceStack.Logging;
@@ -27,6 +28,7 @@ public class AppHost() : AppHostBase("AutomateDroneApp"), IHostingStartup
     // Configure your AppHost with the necessary configuration and dependencies your App needs
     public override void Configure()
     {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         SetConfig(new HostConfig
         {
         });

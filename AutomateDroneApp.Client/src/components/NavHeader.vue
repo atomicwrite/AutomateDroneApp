@@ -21,12 +21,18 @@
               </RouterLink>
             </li>
             <li class="relative flex flex-wrap just-fu-start m-0">
+              <RouterLink to="/drone-maps"
+                          class="p-4 flex items-center justify-start mw-full hover:text-sky-500 dark:hover:text-sky-400"
+                          ActiveClass="text-blue-700 dark:text-blue-300">Drone Paths
+              </RouterLink>
+            </li>
+            <li class="relative flex flex-wrap just-fu-start m-0">
               <RouterLink to="/kmz-uploader"
                           class="p-4 flex items-center justify-start mw-full hover:text-sky-500 dark:hover:text-sky-400"
                           ActiveClass="text-blue-700 dark:text-blue-300">Kmzs
               </RouterLink>
             </li>
-
+            
 
             <template v-if="hasRole('Admin')">
               <li class="relative flex flex-wrap just-fu-start m-0">
